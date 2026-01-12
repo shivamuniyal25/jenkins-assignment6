@@ -48,6 +48,14 @@ def call(Map config = [:]) {
                 }
             }
 
+            stage('Notification') {
+                steps {
+                    echo "Sending notification..."
+                    echo "Channel: ${envConfig.SLACK_CHANNEL_NAME}"
+                    echo "Message: ${envConfig.ACTION_MESSAGE}"
+                }
+            }
+
         }
     }
 }
