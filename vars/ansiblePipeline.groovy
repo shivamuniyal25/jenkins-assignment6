@@ -8,8 +8,16 @@ def call(Map config = [:]) {
             stage('Clone Repository') {
                 steps {
                     echo "Cloning repository..."
-                    git branch: 'main',
-                        url: config.REPO_URL
+                    echo "Repo URL: ${config.REPO_URL}"
+                }
+            }
+
+            stage('User Approval') {
+                when {
+                    expression { config.KEEP_APPROVAL_STAGE == true }
+                }
+                steps {
+                    input message: "Do you want to proceed with deployment to ${config.ENVIRONMENT}?"
                 }
             }
 
