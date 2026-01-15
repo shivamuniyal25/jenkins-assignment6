@@ -55,9 +55,21 @@ def call(Map config = [:]) {
 
             stage('Notification') {
                 steps {
-                    echo "Sending notification..."
-                    echo "Channel: ${envConfig.SLACK_CHANNEL_NAME}"
-                    echo "Message: ${envConfig.ACTION_MESSAGE}"
+                    slackSend(
+                        channel: "#${envConfig.SLACK_CHANNEL_NAME}",
+                        color: "good",
+                        message: """
+                        :white_check_mark: *Elasticsearch Deployment Successful*
+
+                        *Environment:* ${envConfig.ENVIRONMENT}
+                        *Job:* ${env.JOB_NAME}
+                        *Build Number:* ${env.BUILD_NUMBER}
+                        *Triggered By:* ${currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)?.userName ?: 'Jenkins'}
+                        *Status:* SUCCESS
+
+                        <${env.BUILD_URL}|View Build Logs>
+                        """
+                    )
                 }
             }
         }
