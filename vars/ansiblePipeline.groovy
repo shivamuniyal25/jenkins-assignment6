@@ -1,5 +1,7 @@
 def call(Map config = [:]) {
 
+    def envConfig = [:]
+
     pipeline {
         agent any
 
@@ -8,7 +10,8 @@ def call(Map config = [:]) {
             stage('Load Config') {
                 steps {
                     script {
-                        envConfig = readProperties file: 'resources/config/pipeline.conf'
+                        def configText = libraryResource 'config/pipeline.conf'
+                        envConfig = readProperties text: configText
                     }
                 }
             }
@@ -16,7 +19,7 @@ def call(Map config = [:]) {
             stage('Clone Repository') {
                 steps {
                     git url: 'https://github.com/shivamuniyal25/elasticsearch-automation.git',
-                    branch: 'main'
+                        branch: 'main'
                 }
             }
 
@@ -43,8 +46,8 @@ def call(Map config = [:]) {
 
                     sh """
                     ansible-playbook \
-                    -i ${envConfig.CODE_BASE_PATH}/inventory \
-                    ${envConfig.CODE_BASE_PATH}/playbook.yml
+                      -i ${envConfig.CODE_BASE_PATH}/inventory \
+                      ${envConfig.CODE_BASE_PATH}/playbook.yml
                     """
                 }
             }
@@ -56,7 +59,6 @@ def call(Map config = [:]) {
                     echo "Message: ${envConfig.ACTION_MESSAGE}"
                 }
             }
-
         }
     }
 }
