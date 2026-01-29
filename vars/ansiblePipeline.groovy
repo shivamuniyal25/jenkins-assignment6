@@ -48,6 +48,7 @@ def call(Map config = [:]) {
                     ansible-playbook \
                       -i ${envConfig.CODE_BASE_PATH}/aws_ec2.yml \
                       ${envConfig.CODE_BASE_PATH}/playbook.yml \
+                      --private-key=/var/lib/jenkins/.ssh/test-key.pem \
                       --ssh-common-args='-o StrictHostKeyChecking=no'
                     """
                 }
